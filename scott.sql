@@ -1281,3 +1281,523 @@ COMMIT;
 UPDATE DEPT_TCL SET LOC = 'SEOUL' WHERE DEPTNO = 30;	
 COMMIT;
 
+
+-- DDL(데이터 정의어)
+-- 데이터 베이스 데이터를 보관하고 관리하기 위해 제공되는 여러 객체의 생성/변경/삭제 관련 기능
+-- CREATE(생성) / ALTER(생성된 객체 수정) / DROP(생성된 객체 삭제)
+
+-- 1. 테이블 정의어
+--CREATE TABLE 테이블이름(
+--	열이름1 자료형,
+--	열이름2 자료형,
+--	열이름3 자료형,
+--	열이름4 자료형
+--)
+
+-- 테이블 이름 작성 규칙
+-- 1) 문자로 시작(한글 가능하나 사용하지 않음 - 숫자로 시작 못함)
+-- 2) 테이블 이름은 길이의 제한이 있음(30byte)
+-- 3) 같은 소유자 소유의 테이블 이름은 중복이 불가능함
+-- 4) SQL 키워드는 사용 불가(SELECT, INSERT 등)
+
+-- 열 이름 생성 규칙
+-- 1) 문자로 시작
+-- 2) 길이의 제한이 있음(30byte)
+-- 3) 한 테이블에 열 이름 중복 불가
+-- 4) 열 이름은 영문자, 숫자, 특수문자(_, #, $) 사용 가능
+-- 5) SQL 키워드는 사용 불가(SELECT, INSERT 등)
+
+-- 자료형
+-- 문자: varchar2(길이), nvarchar2(길이), char(길이), nchar(길이)
+--		var: 가변(저장된 값의 길이만큼만 사용)
+-- 		name varchar2(10): 홍길동(9byte)
+-- 		name char(10): 홍길동(10byte) - 고정길이
+-- 		db 버전에 따라 한글 문자 하나 당 2byte 할당 or 3byte 할당
+-- 		name varchar2(10): 홍길동전 => 들어갈 값의 크기가 크다고 오류 남
+-- 		nvarchar2(10), nchar(): 10이 바이트 개념이 아니라 문자 길이 자체를 의미
+-- 숫자: number(전체자릿수, 소수점자릿수)
+-- 날짜: date
+-- BLOB: 대용량 이진 데이터 저장
+-- CLOB: 대용량 텍스트 데이터 저장
+
+CREATE TABLE EMP_DDL(
+	EMPNO NUMBER(4,0),
+	ENAME VARCHAR2(10), -- 영어 10자까지 가능 / 한글 3자리까지 가능
+	JOB VARCHAR2(9),
+	MGR NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0)
+);
+
+-- DEPT 테이블의 열구조와 데이터 복사하여 새 테이블 생성
+CREATE TABLE DEPT_TCL AS SELECT * FROM DEPT;
+
+CREATE TABLE DEPT_TCL AS SELECT * FROM DEPT WHERE 1<>1;
+
+
+-- ALTER: 변경
+-- 새로운 열 추가 / 열 이름 변경 / 열 삭제 / 열 자료형 변경
+-- EMP_DDL에 새로운 열(HP: 010-1234-5637) 추가
+ALTER TABLE EMP_DDL ADD HP VARCHAR2(20);
+SELECT * FROM EMP_DDL ed;
+
+-- HP => TEL
+ALTER TABLE EMP_DDL RENAME COLUMN HP TO TEL;
+
+-- EMPNO NUMBER(5)로 변경
+ALTER TABLE EMP_DDL MODIFY EMPNO NUMBER(5);
+
+-- TEL 삭제
+ALTER TABLE EMP_DDL DROP COLUMN TEL;
+
+-- 테이블 이름 변경
+RENAME EMP_DDL TO EMP_RENAME;
+
+-- DROP: 삭제
+DROP TABLE EMP_RENAME;
+
+
+-- [실습1] MEMBER 테이블 작성
+CREATE TABLE MEMBERTBL(
+	ID CHAR(8),
+	NAME VARCHAR2(10), -- NVARCHAR2(10)
+	ADDR VARCHAR2(50), -- NVARCHAR2(50)
+	NATION CHAR(4), -- NCHAR(4)
+	EMAIL VARCHAR2(50), -- NVARCHAR2(50)
+	AGE NUMBER(7, 2)
+)
+
+-- [실습2] MEMBER 테이블 변경
+ALTER TABLE MEMBERTBL ADD BIGO VARCHAR2(20);
+
+ALTER TABLE MEMBERTBL MODIFY BIGO VARCHAR2(30);
+
+ALTER TABLE MEMBERTBL RENAME COLUMN BIGO TO REMARK;
+
+-- [실습3] MEMBER 테이블 변경
+ALTER TABLE MEMBERTBL MODIFY NATION NCHAR(4);
+
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1234', '홍길동', '서울시 구로구 개봉동', '대한민국', 'hong123@naver.com', 25);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1235', '이승기', '서울시 강서구 화곡동', '대한민국', 'lee89@naver.com', 26);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1236', '강호동', '서울시 마포구 상수동', '대한민국', 'kang56@naver.com', 42);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1237', '이수근', '경기도 부천시', '대한민국', 'leesu@naver.com', 42);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1238', '서장훈', '서울시 강남구 대치동', '대한민국', 'seo568@google.com', 36);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1239', '김영철', '서울시 도봉구 도봉동', '대한민국', 'young@naver.com', 41);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1210', '김장훈', '서울시 노원구 노원1동', '대한민국', 'kim@naver.com', 48);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1211', '임창정', '서울시 양천구 신월동', '대한민국', 'limchang@naver.com', 45);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1212', '김종국', '서울시 강남구 도곡동', '대한민국', 'kimjong@naver.com', 44);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1213', '김범수', '경기도 일산동구 일산동', '대한민국', 'kim77@naver.com', 36);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1214', '김경호', '인천시 서구 가좌동', '대한민국', 'ho789@naver.com', 26);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1215', '민경훈', '경기도 수원시 수원1동', '대한민국', 'min@naver.com', 35);
+INSERT INTO MEMBERTBL(ID, NAME, ADDR, NATION, EMAIL, AGE) 
+VALUES('hong1216', '바이브', '경기도 용인시 기흥구', '대한민국', 'vibe@naver.com', 33);
+
+
+SELECT * FROM MEMBERTBL;
+
+
+-- 오라클 객체
+-- 인덱스 / 뷰 / 시퀀스(*) / 동의어 / ROWNUM
+
+-- 인덱스: 빠른 검색
+-- 1) 자동생성: 기본키를 설정 시 인덱스로 자동 설정 됨
+-- 2) 직접 인덱스 생성
+--CREATE INDEX 인덱스명 ON 테이블명(열이름1 ASC OR DESC, 열이름 ASC OR DESC...)
+-- EMP 테이블의 SAL 컬럼을 index로 지정
+CREATE INDEX IDX_EMP_SAL ON EMP(SAL);
+
+DROP INDEX IDX_EMP_SAL;
+
+
+-- 뷰: 가상 테이블
+-- 1. 편리성: 복잡한 SELECT문의 복잡도를 완화하기 위해
+-- 			자주 활용하는 SELECT문을 뷰로 저장해 놓은 후 다른 SQL 구문에서 활용
+-- 2. 보안성: 노출되면 안 되는 커럼을 제외하여 접근 허용
+
+-- 뷰 생성할 수 있는 권한 부여 받기
+--CREATE [OR REPLACE] VIEW 뷰이름(열이름1, 열이름2...) AS (SELECT 구문)
+
+-- EMP 테이블의 20번 부서에 해당하는 사원들의 뷰 생성
+CREATE VIEW VW_EMP_20 AS (SELECT EMPNO, ENAME, JOB, DEPTNO FROM EMP WHERE DEPTNO = 20);
+DROP VIEW VW_EMP_20;
+
+
+CREATE VIEW VW_EMP_20 AS (SELECT * FROM EMP WHERE DEPTNO = 20);
+
+-- 뷰에 데이터 삽입 시 원본 테이블에 삽입이 일어남
+INSERT INTO VW_EMP_20 VALUES (6666, '홍길동', 'MANAGER', 7899, '2012-08-01', 1200, 0, 20);
+SELECT * FROM VW_EMP_20;
+
+SELECT * FROM EMP;
+
+-- 뷰를 통해 SELECT만 가능하도록 제한
+CREATE VIEW VW_EMP_30 AS (SELECT EMPNO, ENAME, JOB, DEPTNO FROM EMP WHERE DEPTNO = 30) WITH READ ONLY;
+
+
+-- ROWNUM: 특수 컬럼(조회된 순서대로 일련번호 부여)
+-- ORDER BY 기준이 PK(기본키)가 아니면 번호 부여가 이상하게 나옴
+SELECT
+	ROWNUM,
+	E.*
+FROM
+	EMP e
+ORDER BY
+	SAL DESC;
+
+-- 정렬의 기준이 PK가 아니라면 인라인 뷰에서 정렬 후 ROWNUM 번호를 부여해야 함
+SELECT
+	ROWNUM,
+	E.*
+FROM
+	(
+	SELECT
+		*
+	FROM
+		EMP
+	ORDER BY
+		SAL DESC) E;
+
+-- 급여 높은 순으로 top-n 추출
+SELECT
+	ROWNUM,
+	E.*
+FROM
+	(
+	SELECT
+		*
+	FROM
+		EMP
+	ORDER BY
+		SAL DESC) E
+WHERE
+	ROWNUM <= 3;
+
+
+-- 시퀀스: 규칙에 따라 순번을 생성
+--CREATE SEQUENCE 시퀀스명;
+CREATE SEQUENCE DEPT_SEQ;
+
+
+--CREATE SEQUENCE SCOTT.DEPT_SEQ 
+--INCREMENT BY 1 (기본값은 1 - 증가를 얼마씩 할 것인가?)
+--MINVALUE 1 (시퀀스에서 생성할 최소값)
+--MAXVALUE 9999999999999999999999999999 (시퀀스에서 생성할 최대값)
+--NOCYCLE (최대값에 도달 후 다시 시작값부터 시작할 것인지 여부)
+--CACHE 20 (시퀀스에서 생성할 번호를 메모리에 미리 할당해 놓은 수)
+--NOORDER 
+
+CREATE TABLE DEPT_SEQUENCE AS SELECT * FROM DEPT WHERE 1<>1;
+
+SELECT  * FROM DEPT_SEQUENCE;
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES(DEPT_SEQ.NEXTVAL, 'DATABASE', 'SEOUL');
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES(DEPT_SEQ.NEXTVAL, 'NETWORK', 'BUSAN');
+
+
+-- 가장 마지막으로 생성된 시퀀스 확인
+SELECT DEPT_SEQ.CURRVAL
+FROM DUAL;
+
+DROP SEQUENCE DEPT_SEQ;
+
+-- 부서번호가 10씩 증가 / 부서번호 90까지 존재
+CREATE SEQUENCE DEPT_SEQ 
+INCREMENT BY 10
+START WITH 10
+MINVALUE 0
+MAXVALUE 90
+NOCYCLE
+CACHE 2;
+
+DELETE FROM DEPT_SEQUENCE;
+SELECT * FROM DEPT_SEQUENCE ORDER BY DEPTNO;
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES(DEPT_SEQ.NEXTVAL, 'DATABASE', 'SEOUL');
+
+-- 시퀀스 MAXVALUE를 넘어가는 실행을 하는 경우
+--시퀀스 DEPT_SEQ.NEXTVAL exceeds MAXVALUE 위반
+
+-- 시퀀스 수정
+ALTER SEQUENCE DEPT_SEQ
+INCREMENT BY 3
+MAXVALUE 99
+CYCLE;
+
+INSERT INTO DEPT_SEQUENCE(DEPTNO, DNAME, LOC)
+VALUES(DEPT_SEQ.NEXTVAL, 'DATABASE', 'SEOUL');
+
+
+-- 동의어: 테이블, 뷰, 스퀀스와 같은 객체에 대신 사용할 수 있는 이름 부여
+--CREATE SYNONYM 동의어이름 FOR 테이블명
+
+-- EMP 테이블에 동의어 지정
+CREATE SYNONYM E FOR EMP;
+
+SELECT * FROM E;
+
+DROP SYNONYM E;
+
+
+-- 제약조건: 특정 열에 지정
+-- 1) NOT NULL: 지정한 열에 NULL을 허용하지 않음
+-- 2) UNIQUE: 지정한 열이 유일한 값을 가져야 함
+-- 3) PRIMARY KEY: 지정한 열이 유일한 값이면서 NULL 허용하지 않음(테이블 당 하나만 지정 가능)
+-- 4) FOREIGN KEY: 다른 테이블의 열을 참조하여 존재하는 값만 입력
+-- 5) CHECK: 설정한 조건식을 만족하는 데이터만 입력 가능
+
+
+-- 1) NOT NULL
+CREATE TABLE TABLE_NOTNULL(
+	LOGIN_ID VARCHAR2(20) NOT NULL,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+-- NULL을 ("SCOTT"."TABLE_NOTNULL"."LOGIN_PWD") 안에 삽입할 수 없습니다
+--INSERT INTO TABLE_NOTNULL VALUES('TEST_ID_01', NULL, '010-1234-5678');
+
+INSERT INTO TABLE_NOTNULL VALUES('TEST_ID_01', 'TEST_PWD_01', NULL);
+
+UPDATE TABLE_NOTNULL SET LOGIN_PWD = NULL WHERE LOGIN_ID = 'TEST_ID_01';
+
+SELECT * FROM TABLE_NOTNULL tn;
+
+-- 제약조건 지정 시 이름 부여
+CREATE TABLE TABLE_NOTNULL2(
+	LOGIN_ID VARCHAR2(20) CONSTRAINT TBLNN2_LGNID_NN NOT NULL,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLNN2_LGNPWD_NN NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+UPDATE TABLE_NOTNULL
+SET TEL = '010-5678-9358'
+WHERE LOGIN_ID = 'TEST_ID_01';
+
+
+-- 기존 테이블에 제약조건 추가(TABLE_NOTNULL TEL 컬럼에 NOT NULL 제약조건 추가)
+ALTER TABLE TABLE_NOTNULL MODIFY(TEL NOT NULL);
+
+ALTER TABLE TABLE_NOTNULL2 MODIFY(TEL CONSTRAINT TBLNN_TEL_NN NOT NULL);
+
+-- 생성한 제약조건 이름 변경
+ALTER TABLE TABLE_NOTNULL2 RENAME CONSTRAINT TBLNN_TEL_NN TO TBLNN2_TEL_NN;
+
+-- 제약조건 삭제
+ALTER TABLE TABLE_NOTNULL2 DROP CONSTRAINT TBLNN2_TEL_NN;
+
+
+-- 2) UNIQUE: 데이터 중복을 허용하지 않음
+CREATE TABLE TABLE_UNIQUE(
+	LOGIN_ID VARCHAR2(20) UNIQUE,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+INSERT INTO TABLE_UNIQUE VALUES('TEST_ID_01', 'TEST_PW_01', '010-1234-5678');
+SELECT * FROM TABLE_UNIQUE tu;
+
+-- 무결성 제약 조건(SCOTT.SYS_C008359)에 위배됩니다
+-- 무결성: 데이터 정확성과 일관성
+
+-- 중복 여부만 확인(NULL을 확인하지는 않음)
+INSERT INTO TABLE_UNIQUE VALUES(NULL, 'TEST_PW_01', '010-1234-5678');
+
+CREATE TABLE TABLE_UNIQUE2(
+	LOGIN_ID VARCHAR2(20) CONSTRAINT TBLUNQ2_LGN_UNQ UNIQUE,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLUNQ2_LGNPW_NN NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+UPDATE TABLE_UNIQUE SET TEL = '010-4567-5896' WHERE LOGIN_ID = 'TEST_ID_01';
+
+ALTER TABLE TABLE_UNIQUE MODIFY(TEL UNIQUE);
+
+-- TABLE_UNIQUE2 TEL UNIQUE 제약조건 추가: 이름(TBLUNQ_TEL_UNQ) 부여
+ALTER TABLE TABLE_UNIQUE2 MODIFY(TEL CONSTRAINT TBLUNQ_TEL_UNQ UNIQUE);
+
+-- 이름 변경 TBLUNQ_TEL_UNQ => TBLUNQ2_TEL_UNQ
+ALTER TABLE TABLE_UNIQUE2 RENAME CONSTRAINT TBLUNQ_TEL_UNQ TO TBLUNQ2_TEL_UNQ;
+
+-- 제약조건 삭제
+ALTER TABLE TABLE_UNIQUE2 DROP CONSTRAINT TBLUNQ2_TEL_UNQ;
+
+
+-- 3) PRIMARY KEY(PK - 기본키): NOT NULL + UNIQUE
+-- 기본키: 주민등록번호, 사원번호, 아이디
+-- 하나의 컬럼만 지정 가능
+CREATE TABLE TABLE_PK(
+	LOGIN_ID VARCHAR2(20) PRIMARY KEY,
+	LOGIN_PWD VARCHAR2(20) NOT NULL,
+	TEL VARCHAR2(20)
+);
+
+INSERT INTO TABLE_PK VALUES('TEST_ID_01', 'TEST_PW_01', '010-1234-5678');
+
+-- 제약조건을 테이블 닫는 괄호 앞쪽에 선언
+CREATE TABLE TABLE_PK2(
+	LOGIN_ID VARCHAR2(20),
+	LOGIN_PWD VARCHAR2(20),
+	TEL VARCHAR2(20)
+	PRIMARY KEY(LOGIN_ID),
+--	UNIQUE(LOGIN_PWD)
+	CONSTRAINT TBL_UNQ UNIQUE(LOGIN_PWD)
+);
+
+-- 4) FOREIGN KEY(외래 키)
+-- 무결성 제약조건(SCOTT.FK_DEPTNO)이 위배되었습니다- 부모 키가 없습니다
+-- DEPT 테이블의 DEPTNO의 값을 기반으로 EMP 테이블의 DEPTNO 값 삽입
+INSERT INTO EMP
+VALUES(9999, '테스트', 'CLERK', '7788', '2017-04-30', 1200, NULL, 50);
+
+-- 외래키 제약조건 테이블 생성
+CREATE TABLE DEPT_FK(
+	DEPTNO NUMBER(2) PRIMARY KEY,
+	DNAME VARCHAR2(14),
+	LOC VARCHAR2(13)
+);
+
+CREATE TABLE EMP_FK(
+	EMPNO NUMBER(4,0) PRIMARY KEY,
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MGR NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO)
+);
+
+-- 무결성 제약조건(SCOTT.EMPFK_DEPTNO_FK)이 위배되었습니다- 부모 키가 없습니다
+INSERT INTO DEPT_FK VALUES(50, 'DATABASE', 'SEOUL');
+INSERT INTO DEPT_FK VALUES(10, 'NETWORK', 'BUSAN');
+INSERT INTO EMP_FK VALUES(9999, '테스트', 'CLERK', '7788', '2017-04-30', 1200, NULL, 50);
+
+-- 무결성 제약조건(SCOTT.EMPFK_DEPTNO_FK)이 위배되었습니다- 자식 레코드가 발견되었습니다
+DELETE FROM DEPT_FK WHERE DEPTNO = 50;
+
+DELETE EMP_FK WHERE EMPNO = 9999;
+
+
+-- 외래키 제약조건이 걸린 테이블 규칙
+-- 1) 삽입 시 부모부터 데이터 삽입
+-- 2) 삭제 시 자식부터 데이터 삭제
+
+-- ON DELETE CASCADE: 부모 데이터 삭제 시 참조하고 있는 자식 데이터 같이 삭제
+-- ON DELETE SET NULL: 부모 데이터 삭제 시 참조하고 있는 자식 데이터의 값을 NULL로 변경
+
+CREATE TABLE EMP_FK2(
+	EMPNO NUMBER(4,0) PRIMARY KEY,
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MGR NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK2_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO) ON DELETE CASCADE
+);
+
+
+INSERT INTO DEPT_FK VALUES(50, 'DATABASE', 'SEOUL');
+INSERT INTO EMP_FK2 VALUES(9999, '테스트', 'CLERK', '7788', '2017-04-30', 1200, NULL, 50);
+
+DELETE FROM DEPT_FK WHERE DEPTNO = 50;
+
+
+CREATE TABLE EMP_FK3(
+	EMPNO NUMBER(4,0) PRIMARY KEY,
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MGR NUMBER(4,0),
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0) CONSTRAINT EMPFK3_DEPTNO_FK REFERENCES DEPT_FK(DEPTNO) ON DELETE SET NULL
+);
+
+INSERT INTO DEPT_FK VALUES(50, 'DATABASE', 'SEOUL');
+INSERT INTO EMP_FK3 VALUES(9999, '테스트', 'CLERK', '7788', '2017-04-30', 1200, NULL, 50);
+
+SELECT * FROM DEPT_FK df;
+SELECT * FROM EMP_FK3;
+DELETE FROM DEPT_FK WHERE DEPTNO = 50;
+
+
+-- 5) CHECK: 값의 범위 또는 패턴 정의
+
+CREATE TABLE TABLE_CHECK(
+	LOGIN_ID VARCHAR2(20) PRIMARY KEY,
+	LOGIN_PWD VARCHAR2(20) CONSTRAINT TBLCK_LGNPW_CK CHECK (LENGTH(LOGIN_PWD) >= 3), -- 길이가 3 이상
+	TEL VARCHAR2(20)
+);
+
+-- 체크 제약조건(SCOTT.TBLCK_LGNPW_CK)이 위배되었습니다
+INSERT INTO TABLE_CHECK VALUES('TEST_ID_01', '12', NULL);
+
+
+-- 6) DEFAULT: 기본값 정의
+
+CREATE TABLE TABLE_DEFAULT(
+	LOGIN_ID VARCHAR2(20) PRIMARY KEY,
+	LOGIN_PWD VARCHAR2(20) DEFAULT '1234',
+	TEL VARCHAR2(20)
+);
+
+INSERT INTO TABLE_DEFAULT VALUES('TEST_ID_01', NULL, NULL);
+INSERT INTO TABLE_DEFAULT(LOGIN_ID, TEL) VALUES('TEST_ID_02', NULL);
+
+SELECT * FROM TABLE_DEFAULT;
+
+-- BOARD 테이블 정의
+-- bno(숫자), name, password, title, content, readcnt(숫자 - default 0), regdate(날짜 - default 현재 시스템 날짜)
+-- 기본키: bno
+-- not null: name, password, title, content
+CREATE TABLE BOARD(
+	BNO NUMBER(8) PRIMARY KEY,
+	NAME VARCHAR2(20) NOT NULL,
+	PASSWORD VARCHAR2(20) NOT NULL,
+	TITLE VARCHAR2(20) NOT NULL,
+	CONTENT VARCHAR2(20) NOT NULL,
+	READCNT NUMBER(8) DEFAULT 0,
+	REGDATE DATE DEFAULT SYSDATE
+);
+
+-- 시퀀스 생성: 1씩 증가 board_seq
+CREATE SEQUENCE BOARD_SEQ;
+
+INSERT INTO BOARD(BNO, NAME, PASSWORD, TITLE, CONTENT)
+VALUES(BOARD_SEQ.NEXTVAL, 'hong', '1111', '게시판', '게시글 작성');
+
+SELECT * FROM BOARD;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
