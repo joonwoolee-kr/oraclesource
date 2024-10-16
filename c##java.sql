@@ -73,3 +73,18 @@ DELETE FROM BOOKTBL b WHERE CODE = 1004;
 
 -- 도서명 '자바' 키워드가 들어있는 도서 조회
 SELECT * FROM BOOKTBL b WHERE TITLE LIKE '%자바%';
+
+
+CREATE TABLE membertbl(
+userid varchar2(20) PRIMARY KEY,
+name varchar2(20) NOT NULL,
+password varchar2(20) NOT NULL
+);
+
+INSERT INTO membertbl values('hong123', '홍길동', 'hong123');
+
+-- 아이디와 비밀번호가 일치하는 회원 조회(로그인)
+SELECT * FROM MEMBERTBL WHERE USERID = 'hong123' AND PASSWORD = 'hong123';
+
+-- 중복 아이디 검사
+SELECT  * FROM MEMBERTBL WHERE  USERID = 'hong123';
