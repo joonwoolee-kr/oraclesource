@@ -74,6 +74,21 @@ DELETE FROM BOOKTBL b WHERE CODE = 1004;
 -- 도서명 '자바' 키워드가 들어있는 도서 조회
 SELECT * FROM BOOKTBL b WHERE TITLE LIKE '%자바%';
 
+-- 더미 데이터 삽입
+CREATE SEQUENCE	book_seq
+START WITH 2000;
+
+INSERT INTO BOOKTBL(CODE, TITLE, WRITER, PRICE)
+(SELECT book_seq.nextval, TITLE, WRITER, PRICE FROM	BOOKTBL)
+
+SELECT COUNT(*) FROM BOOKTBL; 
+
+-- 검색(조회)
+-- title에 자바 키워드가 포함된 도서 조회 후 도서코드로 내림차순 정렬
+SELECT * FROM BOOKTBL WHERE TITLE LIKE '%자바%' ORDER BY CODE DESC;
+
+SELECT * FROM BOOKTBL WHERE TITLE LIKE '%%' ORDER BY CODE DESC;
+
 
 CREATE TABLE membertbl(
 userid varchar2(20) PRIMARY KEY,
@@ -93,3 +108,24 @@ SELECT  * FROM MEMBERTBL WHERE  USERID = 'hong123';
 UPDATE MEMBERTBL
 SET PASSWORD = 'hong456'
 WHERE USERID = 'hong123' AND PASSWORD = 'hong123';
+
+
+-- board
+-- bno(pk), name(varchar2(20)), password(varchar2(20)), title(varchar2(100)), content(varchar2(2000)), attach(varchar2(100)),
+-- re_ref, re_lev, re_seq, readcnt, regdate(date(sysdate))
+CREATE TABLE board(
+bno NUMBER(8) PRIMARY KEY,
+name varchar2(20) NOT NULL,
+password varchar2(20) NOT NULL,
+title varchar2(100) NOT NULL,
+content varchar2(2000) NOT NULL,
+attach varchar2(100) NOT NULL,
+re_ref NUMBER(8) NOT NULL,
+re_lev NUMBER(8) NOT NULL,
+reancnt NUMBER(8) DEFAULT 0,
+regdate DATE DEFAULT sysdate
+);
+
+
+-- 시퀀스 생성 board_seq
+CREATE SEQUENCE board_seq;
