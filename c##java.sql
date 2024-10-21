@@ -119,13 +119,26 @@ name varchar2(20) NOT NULL,
 password varchar2(20) NOT NULL,
 title varchar2(100) NOT NULL,
 content varchar2(2000) NOT NULL,
-attach varchar2(100) NOT NULL,
+attach varchar2(100),
 re_ref NUMBER(8) NOT NULL,
 re_lev NUMBER(8) NOT NULL,
-reancnt NUMBER(8) DEFAULT 0,
+re_seq NUMBER(8) NOT NULL,
+readcnt NUMBER(8) DEFAULT 0,
 regdate DATE DEFAULT sysdate
 );
 
-
 -- 시퀀스 생성 board_seq
 CREATE SEQUENCE board_seq;
+
+-- board attach not null
+ALTER TABLE board MODIFY attach varchar2(20) NULL;
+
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', 'board 작성', 'board 작성', board_seq.currval, 0, 0);
+
+-- 상세조회
+SELECT * FROM board WHERE bno = 3;
+
+-- 수정
+-- bno와 password가 일치 시 title, content 수정
+UPDATE board SET TITLE = '변경할 타이틀', CONTENT = '변경할 내용' WHERE BNO = '1' AND PASSWORD = '12345';
