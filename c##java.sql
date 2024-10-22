@@ -142,3 +142,61 @@ SELECT * FROM board WHERE bno = 3;
 -- 수정
 -- bno와 password가 일치 시 title, content 수정
 UPDATE board SET TITLE = '변경할 타이틀', CONTENT = '변경할 내용' WHERE BNO = '1' AND PASSWORD = '12345';
+
+-- 삭제
+DELETE FROM board WHERE bno = 1 AND password = '12345';
+
+-- 조회수 업데이트
+UPDATE BOARD SET READCNT = READCNT + 1 WHERE BNO = 1;
+
+
+-- 더미 데이터
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+(SELECT board_seq.nextval, name, password, title, content, board_seq.currval, re_lev, re_seq FROM board);
+
+SELECT COUNT(*) FROM BOARD; 
+
+-- 댓글 처리
+
+-- 가장 최신 글에 댓글 처리
+SELECT
+	*
+FROM
+	BOARD
+WHERE
+	bno = (
+	SELECT
+		MAX(bno)
+	FROM
+		BOARD);
+		
+-- 그룹 개념(re_ref)
+
+-- 댓글 추가(re_ref: 부모 글의 re_ref 넣어주기)
+-- re_lev: 부모 글 re_lev + 1
+-- re_seq: 부모 글 re_seq + 1
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', 'board 작성', 'board 작성', 652, 0, 0);
+
+UPDATE board SET re_lev = 0, re_seq = 0 WHERE bno = 652;
+
+-- 원본 글과 댓글 함께 조회
+SELECT * FROM board WHERE RE_REF = 652;
+
+-- 두번째 댓글 추가(최신순 조회: re_seq)
+-- re_seq 낮을수록 최신 글
+
+-- 원본 글
+-- ㄴ 댓글2
+--   ㄴ 댓글2의 댓글
+-- ㄴ 댓글1
+
+-- 댓글2 추가
+-- 먼저 들어간 댓글이 있다면 re_seq 값을 +1 해야 함
+-- UPDATE BOARD SET RE_SEQ = RE_SEQ + 1 WHERE RE_REF = 부모글 re_ref AND RE_SEQ > 부모글 re_seq;
+UPDATE BOARD SET RE_SEQ = RE_SEQ + 1 WHERE RE_REF = 652 AND RE_SEQ > 0;
+
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', '댓글 board 작성', '댓글 board 작성', 652, 1, 1);
+
+SELECT * FROM board WHERE RE_REF = 652 ORDER BY RE_REF DESC, RE_SEQ ASC;
