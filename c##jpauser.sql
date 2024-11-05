@@ -68,3 +68,8 @@ FROM TEAM t JOIN TEAM_MEMBER tm ON t.ID = tm.TEAM_ID WHERE t.NAME = '팀1';
 UPDATE TEAM_MEMBER
 SET TEAM_ID ='team2'
 WHERE TEAM_ID = 'team1' AND id = 'user6';
+
+-- PARENT 삭제
+-- 무결성 제약조건이 위배되었습니다- 자식 레코드가 발견되었습니다
+DELETE FROM PARENT p 
+WHERE p.id = 3;
