@@ -111,10 +111,56 @@ WHERE
 	jt.NAME = 'team2';
 
 
+-- mart_orders, mart_member, mart_order_item 조인
+SELECT
+	*
+FROM
+	MART_ORDERS mo
+JOIN MART_MEMBER mm ON
+	mo.MEMBER_MEMBER_ID = mm.MEMBER_ID
+LEFT JOIN MART_ORDER_ITEM moi ON
+	mo.ORDER_ID = moi.ORDER_ORDER_ID;
 
+-- 주문번호에 따른 주문상품의 개수 추출
+SELECT moi.ORDER_ORDER_ID, COUNT(moi.ORDER_ORDER_ID) AS cnt, SUM(moi.COUNT) AS sum FROM MART_ORDER_ITEM moi GROUP BY moi.ORDER_ORDER_ID;
 
+-- 서브쿼리
+-- 1) from에 서브쿼리 사용(인라인뷰)
+-- 2) where에 서브쿼리 사용(중첩 서브쿼리)
+-- 3) select에 서브쿼리 사용(스칼라)
+-- 주문내역 + 주문아이템
+SELECT
+	mo.ORDER_ID, mo.STATUS, A.cnt, A.sum
+FROM
+	MART_ORDERS mo
+LEFT JOIN (
+	SELECT
+		moi.ORDER_ORDER_ID AS ooi,
+		COUNT(moi.ORDER_ORDER_ID) AS cnt,
+		SUM(moi.COUNT) AS sum
+	FROM
+		MART_ORDER_ITEM moi
+	GROUP BY
+		moi.ORDER_ORDER_ID) A ON
+	mo.ORDER_ID = A.ooi;
 
-
+SELECT
+	mo.ORDER_ID,
+	mo.STATUS,
+	(
+	SELECT
+		COUNT(moi.ORDER_ORDER_ID)
+	FROM
+		MART_ORDER_ITEM moi
+	WHERE
+		mo.ORDER_ID = moi.ORDER_ORDER_ID
+	GROUP BY
+		moi.ORDER_ORDER_ID) AS cnt
+FROM
+	MART_ORDERS mo
+JOIN MART_MEMBER mm ON
+	mo.MEMBER_MEMBER_ID
+	AND mm.MEMBER_ID;
 
 
 
