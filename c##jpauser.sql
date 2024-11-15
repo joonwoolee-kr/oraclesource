@@ -163,11 +163,54 @@ JOIN MART_MEMBER mm ON
 	AND mm.MEMBER_ID;
 
 
+SELECT * FROM BOARD b;
 
+-- 100번 게시물에 달린 댓글 가져오기
+-- board 정보, reply 추출
+SELECT * FROM BOARD b JOIN REPLY r ON b.BNO = r.BOARD_BNO WHERE b.BNO = 100;
 
+-- 게시물 + 게시물의 댓글 수
+SELECT
+	b.BNO,
+	b.TITLE,
+	(
+	SELECT
+		COUNT(r.RNO)
+	FROM
+		REPLY r
+	WHERE
+		r.BOARD_BNO = b.BNO) AS RCNT,
+	b.WRITER_EMAIL,
+	b.REGDATE
+FROM
+	BOARD b;
 
+-- 게시물 + 게시물의 댓글 수 + 게시물 작성자 이름
+SELECT
+	b.BNO,
+	b.TITLE,
+	(
+	SELECT
+		COUNT(r.RNO)
+	FROM
+		REPLY r
+	WHERE
+		r.BOARD_BNO = b.BNO) AS RCNT,
+	b.WRITER_EMAIL,
+	b.REGDATE,
+	m.NAME
+FROM
+	BOARD b JOIN "MEMBER" m ON b.WRITER_EMAIL = m.EMAIL;
 
+SELECT
+	r.BOARD_BNO,
+	COUNT(r.RNO)
+FROM
+	REPLY r
+GROUP BY
+	r.BOARD_BNO;
 
+DELETE FROM BOARD b WHERE b.bno = 100;
 
 
 
