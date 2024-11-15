@@ -213,7 +213,9 @@ GROUP BY
 DELETE FROM BOARD b WHERE b.bno = 100;
 
 
-
+-- 자식(reply) 삭제, 부모(board) 삭제
+DELETE FROM REPLY r WHERE r.BOARD_BNO = 1;
+DELETE FROM BOARD b WHERE b.bno = 100;
 
 
 
