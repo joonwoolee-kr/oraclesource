@@ -164,7 +164,20 @@ LEFT JOIN MOVIE_IMAGE mi2 ON
 WHERE
 	m.MNO = 1;
 	
-	
+
+-- 회원탈퇴(리뷰삭제, 회원탈퇴)
+DELETE
+FROM
+	REVIEW r
+WHERE
+	r.member_mid = 50;
+
+DELETE
+FROM
+	M_MEMBER mm
+WHERE
+	mm.email = 'user50@gmail.com'
+	AND mm.password = '{bcrypt}$2a$10$DElK6aHtdpA1Nk5hjBufOOF9tiEy7J/VWpl.D803j/h14chAwBRcS';
 	
 	
 	
