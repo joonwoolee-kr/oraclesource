@@ -180,7 +180,7 @@ WHERE
 	AND mm.password = '{bcrypt}$2a$10$DElK6aHtdpA1Nk5hjBufOOF9tiEy7J/VWpl.D803j/h14chAwBRcS';
 	
 	
-	
+SELECT * FROM MOVIE_IMAGE mi WHERE mi."PATH" = TO_CHAR(SYSDATE - 1, 'YYYY/MM/DD');
 	
 	
 	
