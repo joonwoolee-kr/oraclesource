@@ -221,12 +221,75 @@ DELETE FROM BOARD b WHERE b.bno = 100;
 SELECT * FROM REPLY r WHERE r.BOARD_BNO = 10 ORDER BY RNO DESC;
 
 
+-- booktbl + publisher + category
+-- 카테고리명, 제목, 저자, 출판사명
+SELECT
+	c.CATEGORY_NAME,
+	b.TITLE,
+	b.WRITER,
+	p.PUBLISHER_NAME
+FROM
+	BOOKTBL b
+JOIN PUBLISHER p ON
+	b.PUBLISHER_PUBLISHER_ID = p.PUBLISHER_ID
+JOIN CATEGORY c ON
+	b.CATEGORY_CATEGORY_ID = c.CATEGORY_ID;
 
+-- 페이지 나누기 + 검색
+SELECT
+	*
+FROM
+	(
+	SELECT
+		rownum rn,
+		b.*
+	FROM
+		(
+		SELECT
+			*
+		FROM
+			BOOKTBL
+		ORDER BY
+			BOOK_ID DESC) b
+	WHERE
+		title LIKE '%한글%'
+		OR content LIKE '%나라%'
+		AND rownum <= 20)
+WHERE
+	rn > 10;
 
-
-
-
-
+SELECT
+	t.BOOK_ID,
+	t.TITLE,
+	t.PUBLISHER_ID,
+	t.PUBLISHER_NAME,
+	t.CATEGORY_ID,
+	t.CATEGORY_NAME
+FROM
+	(
+	SELECT
+		rownum rn,
+		b1.*
+	FROM
+		(
+		SELECT
+			*
+		FROM
+			BOOKTBL b
+		JOIN PUBLISHER p ON
+			b.PUBLISHER_PUBLISHER_ID = p.PUBLISHER_ID
+		JOIN CATEGORY c ON
+			b.CATEGORY_CATEGORY_ID = c.CATEGORY_ID
+		WHERE
+			b.BOOK_ID > 0
+		ORDER BY
+			b.BOOK_ID DESC) b1
+	WHERE
+--		(category_name LIKE '%소설%')
+--		AND
+	rownum <= 10) t
+WHERE
+	rn > 0;
 
 
 
